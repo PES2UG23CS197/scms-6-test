@@ -37,7 +37,7 @@ CREATE TABLE Orders (
     customer_location VARCHAR(100) NOT NULL,
     status ENUM('Pending', 'Processed') DEFAULT 'Pending',
     FOREIGN KEY (sku) REFERENCES Products(sku),
-    INDEX idx_status (status)  -- ✅ Faster filtering by order status
+    INDEX idx_status (status)  
 ) ENGINE=InnoDB;
 
 -- Logistics Table
@@ -102,12 +102,6 @@ INSERT INTO Inventory (sku, location, quantity) VALUES
 ('SKU002', 'Warehouse B', 15),
 ('SKU003', 'Warehouse A', 5);
 
--- Sample Logistics
--- INSERT INTO Logistics (sku, origin, destination, transport_cost) VALUES
--- ('SKU001', 'Warehouse A', 'Retail Hub 1', 150.00),
--- ('SKU002', 'Warehouse B', 'Retail Hub 2', 120.00),
--- ('SKU003', 'Warehouse A', 'Retail Hub 3', 90.00);
-
 -- Sample Routes
 INSERT INTO Routes (origin, destination, cost, distance_km) VALUES
 ('Warehouse A', 'Retail Hub 1', 150.00, 25.5),
@@ -118,18 +112,6 @@ INSERT INTO Routes (origin, destination, cost, distance_km) VALUES
 ('Warehouse B', 'Retail Hub 3', 175.00, 30.0),
 ('Warehouse B', 'Warehouse A', 80.00, 20.0),
 ('Warehouse A', 'Warehouse B', 100.00, 30.0);
-
--- Sample Orders
--- INSERT INTO Orders (sku, quantity, customer_name, customer_location, status) VALUES
--- ('SKU001', 2, 'Alice', 'Retail Hub 1', 'Pending'),
--- ('SKU002', 1, 'Bob', 'Retail Hub 2', 'Processed'),
--- ('SKU003', 3, 'Charlie', 'Retail Hub 3', 'Pending');
-
--- Sample Forecast
--- INSERT INTO DemandForecast (sku, forecast_value, forecast_date) VALUES
--- ('SKU001', 10, '2025-11-10'),
--- ('SKU002', 15, '2025-11-12'),
--- ('SKU003', 8, '2025-11-15');
 
 -- Sample Queries 
 SELECT * FROM Users; 
