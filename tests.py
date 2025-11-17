@@ -286,3 +286,70 @@ def test_forecast_and_inventory_zero_case():
     """Test get_inventory_for_forecast when SKU does not exist."""
     val = get_inventory_for_forecast("NONEXISTENTSKU")
     assert val == 0
+
+
+
+
+
+
+
+
+
+
+
+def test_update_inventory_functionality():
+    """Test update_inventory directly to cover its code path."""
+    sku = "SKU_UPDATE"
+    location = "Warehouse C"
+
+    # Ensure clean state
+    delete_inventory_for_sku(sku)
+    add_inventory(sku, location, 5)
+
+    # Update quantity
+    from db.queries import update_inventory
+    update_inventory(sku, location, 15)
+
+    inv = get_inventory()
+    updated = [i for i in inv if i[1] == sku and i[2] == location][0]
+    assert updated[3] == 15
+
+
+def test_move_product_insert_branch():
+    """Test move_product when destination does not exist (covers INSERT branch)."""
+    sku = "SKU_INSERT"
+    origin = "Warehouse D"
+    destination = "Retail Hub 2"
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM Inventory WHERE sku = %s", (sku,))
+    conn.commit()
+
+    # Add only origin
+    add_inventory(sku, origin, 10)
+
+    cost = get_route_cost(origin, destination)
+    move_product(sku, origin, destination, 2, cost)
+
+    inv = get_inventory()
+    dest_qty = [i[3] for i in inv if i[1] == sku and i[2] == destination]
+    assert dest_qty and dest_qty[0] >= 2
+
+    cursor.close()
+    conn.close()
+
+
+def test_get_orders_admin_branch():
+    """Test get_orders with Admin role to cover that branch."""
+    sku = "SKU001"
+    user = "AdminTest"
+    location = "Retail Hub 1"
+
+    # Place an order
+    place_order(sku, 1, user, location)
+
+    # Admin should see all orders
+    orders = get_orders(role="Admin")
+    assert any(o[1] == sku for o in orders)
+
