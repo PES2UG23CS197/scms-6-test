@@ -5,3 +5,4 @@ pytest==8.2.0
 pytest-timeout
 pytest-cov
 pylint
+bandit==1.7.9
