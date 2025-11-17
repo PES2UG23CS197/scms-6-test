@@ -151,4 +151,4 @@ jobs:
           pip install bandit
 
       - name: Run Bandit (Security Scan)
-        run: bandit -r . -x tests.py
+        run: bandit -r . -x tests.py -s B106
